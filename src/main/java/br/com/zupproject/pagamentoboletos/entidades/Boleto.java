@@ -2,53 +2,54 @@ package br.com.zupproject.pagamentoboletos.entidades;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
+import br.com.zupproject.pagamentoboletos.entidades.embeddables.Conta;
 import br.com.zupproject.pagamentoboletos.entidades.enums.StatusPagamento;
 
 @Entity
 public class Boleto {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	@Column(nullable = false, unique = true)
-	private String codigoDeBarras;
-	@Column(nullable = false)
-	private BigDecimal valor;
-	@Column(nullable = false)
-	private Long idCliente;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    @Column(nullable = false)
+    private String codigoDeBarras;
+    @Column(nullable = false)
+    private BigDecimal valor;
+    @Embedded
+	private Conta conta;
 
-	@Enumerated(EnumType.STRING)
-	private StatusPagamento pagamento;
+    @Enumerated(EnumType.STRING)
+    private StatusPagamento statusPagamento;
 
-	@Deprecated
-	public Boleto() {
-	}
+    @Deprecated
+    public Boleto() {
+    }
 
-	public Boleto(String nroBoleto, BigDecimal valor, Long idCliente) {
-		super();
-		this.codigoDeBarras = nroBoleto;
+	public Boleto(String codigoDeBarras, BigDecimal valor, Conta conta) {
+		this.codigoDeBarras = codigoDeBarras;
 		this.valor = valor;
-		this.idCliente = idCliente;
+		this.conta = conta;
 	}
 
 	public void setPagamento(StatusPagamento pagamento) {
-		this.pagamento = pagamento;
-	}
+        this.statusPagamento = pagamento;
+    }
 
-	public String getCodigoDeBarras() {
-		return codigoDeBarras;
-	}
+    public String getCodigoDeBarras() {
+        return codigoDeBarras;
+    }
 
-	public BigDecimal getValor() {
-		return valor;
-	}
+    public BigDecimal getValor() {
+        return valor;
+    }
 
+    public StatusPagamento getStatusPagamento() {
+        return statusPagamento;
+    }
+
+	public Conta getConta() {
+		return conta;
+	}
 }

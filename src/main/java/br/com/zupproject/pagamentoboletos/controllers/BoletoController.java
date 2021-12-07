@@ -2,15 +2,17 @@ package br.com.zupproject.pagamentoboletos.controllers;
 
 import javax.validation.Valid;
 
+import br.com.zupproject.pagamentoboletos.entidades.embeddables.Conta;
+import br.com.zupproject.pagamentoboletos.services.EmailService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.zupproject.pagamentoboletos.clients.PagamentoNoBancoClient;
-import br.com.zupproject.pagamentoboletos.commons.exceptions.ErroDeNegocioException;
 import br.com.zupproject.pagamentoboletos.commons.modelos.RespostaPagamento;
 import br.com.zupproject.pagamentoboletos.controllers.requests.BoletoRequest;
 import br.com.zupproject.pagamentoboletos.controllers.requests.PagamentoRequest;
@@ -20,41 +22,58 @@ import br.com.zupproject.pagamentoboletos.entidades.enums.StatusPagamento;
 import br.com.zupproject.pagamentoboletos.repositorios.BoletoRepository;
 import feign.FeignException;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/boletos")
 public class BoletoController {
 
-	@Autowired
-	private BoletoRepository repository;
+    @Autowired
+    private BoletoRepository repository;
 
-	@Autowired
-	private PagamentoNoBancoClient client;
+    @Autowired
+    private PagamentoNoBancoClient client;
 
-	@PostMapping
-	public void pagarBoleto(@Valid @RequestBody BoletoRequest request) {
+    @Autowired
+    private EmailService email;
 
-		if (request.getConta().getSaldo().compareTo(request.getValor()) < 0) {
-			throw new ErroDeNegocioException(HttpStatus.UNPROCESSABLE_ENTITY,
-					"Não há saldo suficiente para pagar um boleto no valor de " + request.getValor(), "Saldo");
+
+    private final Logger logger = LoggerFactory.getLogger(BoletoController.class);
+
+    @PostMapping
+    public void pagarBoleto(@Valid @RequestBody BoletoRequest request) {
+
+        Boleto boleto = request.toModel();
+
+        try {
+
+            RespostaPagamentoBoleto respostaPagamento = client
+                    .realizarPagamento(new PagamentoRequest(request.getCodigoDeBarras(), request.getValor()));
+            StatusPagamento statusPagamento = respostaPagamento.getResposta().equals(RespostaPagamento.SUCESSO)
+                    ? StatusPagamento.PAGO
+                    : StatusPagamento.FALHA;
+            boleto.setPagamento(statusPagamento);
+
+			preparaListenerEmail(boleto);
+
+        } catch (FeignException e) {
+            logger.warn("Serviço de pagamento indisponível em " + LocalDateTime.now());
+            boleto.setPagamento(StatusPagamento.AGUARDANDO_PAGAMENTO);
+        }
+
+        repository.save(boleto);
+
+        // TODO - planejar o envio da resposta.
+
+    }
+
+    private void preparaListenerEmail(Boleto boleto) {
+
+        if (boleto.getStatusPagamento().equals(StatusPagamento.PAGO)) {
+            email.pagamentoSucesso(boleto);
+        } else {
+			email.pagamentoSemSucesso(boleto);
 		}
 
-		Boleto boleto = request.toModel();
-
-		try {
-
-			RespostaPagamentoBoleto respostaPagamento = client
-					.realizarPagamento(new PagamentoRequest(request.getCodigoDeBarras(), request.getValor()));
-			StatusPagamento statusPagamento = respostaPagamento.getResposta().equals(RespostaPagamento.SUCESSO)
-					? StatusPagamento.PAGO
-					: StatusPagamento.FALHA;
-			boleto.setPagamento(statusPagamento);
-
-		} catch (FeignException e) {
-			boleto.setPagamento(StatusPagamento.AGUARDANDO_PAGAMENTO);
-		}
-
-		repository.save(boleto);
-		
-		// TODO - planejar o envio da resposta.
-	}
+    }
 }

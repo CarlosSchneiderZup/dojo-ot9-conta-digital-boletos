@@ -6,7 +6,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-import br.com.zupproject.pagamentoboletos.commons.modelos.Conta;
+import br.com.zupproject.pagamentoboletos.entidades.embeddables.Conta;
+import br.com.zupproject.pagamentoboletos.commons.validator.Pagamento;
 import br.com.zupproject.pagamentoboletos.entidades.Boleto;
 
 public class BoletoRequest {
@@ -16,10 +17,11 @@ public class BoletoRequest {
 	private BigDecimal valor;
 
 	@NotBlank
+	@Pagamento(domainClass = Boleto.class, fieldName = "codigoDeBarras")
 	private String codigoDeBarras;
 
 	@NotNull
-	private Conta conta;
+	private ContaRequest contaRequest;
 
 	public BigDecimal getValor() {
 		return valor;
@@ -29,12 +31,12 @@ public class BoletoRequest {
 		return codigoDeBarras;
 	}
 
-	public Conta getConta() {
-		return conta;
+	public ContaRequest getContaRequest() {
+		return contaRequest;
 	}
 
 	public Boleto toModel() {
-		return new Boleto(codigoDeBarras, valor, conta.getIdUsuario());
+		return new Boleto(codigoDeBarras, valor, contaRequest.toModel());
 	}
 	
 	

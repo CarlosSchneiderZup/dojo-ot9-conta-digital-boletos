@@ -13,3 +13,8 @@ Pelo código de barras conseguimos saber o banco a ser feito o pagamento e o val
   Incluir logs no sistema
   Realizar testes
   Criar serviço de e-mail
+
+- Dia: 08/12/2021
+  Decidimos atacar a parte dos testes para garantir maior qualidade de codigo
+  Verificar se o Kafka esta recebendo esta as mensagens
+  Verificar o possivel problema do Scheduler caso tenham muitas Pendencias no Banco, isso ocasionara uma queda, resolver com Paginação.

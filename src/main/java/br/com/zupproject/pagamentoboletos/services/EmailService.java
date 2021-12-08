@@ -1,11 +1,11 @@
 package br.com.zupproject.pagamentoboletos.services;
 
-import br.com.zupproject.pagamentoboletos.entidades.embeddables.Conta;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import br.com.zupproject.pagamentoboletos.email.DadosEmail;
 import br.com.zupproject.pagamentoboletos.email.ProducerEmail;
 import br.com.zupproject.pagamentoboletos.entidades.Boleto;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {

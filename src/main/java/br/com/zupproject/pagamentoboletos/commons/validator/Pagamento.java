@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = {PagamentoValidador.class})
 public @interface Pagamento {
 
-    String message() default "Não foi possível, pois o boleto já foi pago.";
+    String message() default "Não foi possível realizar o pagamento, pois o boleto já foi pago, ou está em transação.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
     String fieldName();

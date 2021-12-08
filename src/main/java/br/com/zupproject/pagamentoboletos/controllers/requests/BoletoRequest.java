@@ -6,7 +6,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-import br.com.zupproject.pagamentoboletos.entidades.embeddables.Conta;
 import br.com.zupproject.pagamentoboletos.commons.validator.Pagamento;
 import br.com.zupproject.pagamentoboletos.entidades.Boleto;
 
@@ -38,6 +37,5 @@ public class BoletoRequest {
 	public Boleto toModel() {
 		return new Boleto(codigoDeBarras, valor, contaRequest.toModel());
 	}
-	
-	
+
 }

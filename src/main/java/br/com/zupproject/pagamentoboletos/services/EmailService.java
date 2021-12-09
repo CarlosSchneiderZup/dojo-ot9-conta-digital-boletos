@@ -19,7 +19,7 @@ public class EmailService {
         String mensagem = "Pagamento do boleto com código de barras " + boleto.getCodigoDeBarras();
         String remetente = "nao.resposand@otbank.com.br";
         String destinatario = boleto.getConta().getEmail();
-        DadosEmail dadosEmail = new DadosEmail(assunto,mensagem,remetente,destinatario);
+        DadosEmail dadosEmail = new DadosEmail(assunto,mensagem,remetente,destinatario, true);
         envio.enviarMensagem(dadosEmail);
     }
 
@@ -29,7 +29,7 @@ public class EmailService {
         String mensagem = "Falha ao efetuar pagamento do boleto " + boleto.getCodigoDeBarras();
         String remetente = "nao.resposand@otbank.com.br";
         String destinatario = boleto.getConta().getEmail();
-        DadosEmail dadosEmail = new DadosEmail(assunto,mensagem,remetente,destinatario);
+        DadosEmail dadosEmail = new DadosEmail(assunto,mensagem,remetente,destinatario, false);
         envio.enviarMensagem(dadosEmail);
     }
 

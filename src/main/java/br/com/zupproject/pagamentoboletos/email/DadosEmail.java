@@ -15,14 +15,19 @@ public class DadosEmail {
         this.destinatario = destinatario;
     }
 
+    public String getMensagem() {
+        return mensagem;
+    }
 
-    @Override
-    public String toString() {
-        return "DadosEmail{" +
-                "mensagem='" + mensagem + '\'' +
-                ", assunto='" + assunto + '\'' +
-                ", remetente='" + remetente + '\'' +
-                ", destinatario='" + destinatario + '\'' +
-                '}';
+    public String getAssunto() {
+        return assunto;
+    }
+
+    public String getRemetente() {
+        return remetente;
+    }
+
+    public String getDestinatario() {
+        return destinatario;
     }
 }

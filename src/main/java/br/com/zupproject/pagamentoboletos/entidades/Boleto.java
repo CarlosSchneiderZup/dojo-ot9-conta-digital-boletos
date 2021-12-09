@@ -59,4 +59,15 @@ public class Boleto {
 	public Conta getConta() {
 		return conta;
 	}
+
+	@Override
+	public String toString() {
+		return "Boleto{" +
+				"id=" + id +
+				", codigoDeBarras='" + codigoDeBarras + '\'' +
+				", valor=" + valor +
+				", conta=" + conta +
+				", statusPagamento=" + statusPagamento +
+				'}';
+	}
 }

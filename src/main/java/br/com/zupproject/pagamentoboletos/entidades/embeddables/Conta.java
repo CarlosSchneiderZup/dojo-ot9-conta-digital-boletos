@@ -9,6 +9,10 @@ public class Conta {
     private String nroConta;
     private String email;
 
+    @Deprecated
+    public Conta() {
+    }
+
     public Conta(Long idUsuario, String nroConta, String email) {
         this.idUsuario = idUsuario;
         this.nroConta = nroConta;

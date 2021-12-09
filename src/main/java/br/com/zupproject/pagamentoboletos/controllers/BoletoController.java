@@ -39,7 +39,7 @@ public class BoletoController {
 	private final Logger logger = LoggerFactory.getLogger(BoletoController.class);
 
 	@PostMapping
-	public void pagarBoleto(@Valid @RequestBody BoletoRequest request) {
+	public void pagarBoleto(@RequestBody @Valid BoletoRequest request) {
 
 		Boleto boleto = request.toModel();
 

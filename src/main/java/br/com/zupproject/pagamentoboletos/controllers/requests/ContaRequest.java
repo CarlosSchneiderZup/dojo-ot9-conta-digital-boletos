@@ -16,6 +16,16 @@ public class ContaRequest {
 	@Email
 	private String email;
 
+	@Deprecated
+	public ContaRequest() {
+	}
+
+	public ContaRequest(Long idUsuario, String nroConta, String email) {
+		this.idUsuario = idUsuario;
+		this.nroConta = nroConta;
+		this.email = email;
+	}
+
 	public Conta toModel() {
 		return new Conta(idUsuario, nroConta, email);
 	}

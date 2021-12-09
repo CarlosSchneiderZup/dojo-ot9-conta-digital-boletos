@@ -6,6 +6,15 @@ public class RespostaPagamentoBoleto {
 
 	private RespostaPagamento resposta;
 
+
+	@Deprecated
+	public RespostaPagamentoBoleto() {
+	}
+
+	public RespostaPagamentoBoleto(RespostaPagamento resposta) {
+		this.resposta = resposta;
+	}
+
 	public RespostaPagamento getResposta() {
 		return resposta;
 	}

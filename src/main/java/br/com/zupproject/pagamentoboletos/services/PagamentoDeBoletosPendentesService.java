@@ -36,20 +36,20 @@ public class PagamentoDeBoletosPendentesService {
     protected void tentaPagarBoletosEmAberto() {
         logger.info("Inicio da rotina para reprocessamento de boletos pendentes");
         List<Boleto> boletosEmAberto = repository.findBoletosEmAberto();
-
+        logger.info("{} Boletos encontrados",boletosEmAberto.size());
         if (boletosEmAberto.isEmpty()) {
             return;
         }
 
         List<Boleto> boletosConferidos = boletosEmAberto.stream()
-                .map(boleto -> tentaPagarBoleto(boleto))
+                .map(this::tentaPagarBoleto)
                 .collect(Collectors.toList());
 
         repository.saveAll(boletosConferidos);
     }
 
     private Boleto tentaPagarBoleto(Boleto boleto) {
-
+        logger.info("Tentando Pagar Boleto {}",boleto.getCodigoDeBarras());
         try {
             RespostaPagamentoBoleto respostaPagamento = client
                     .realizarPagamento(new PagamentoRequest(boleto.getCodigoDeBarras(), boleto.getValor()));
@@ -59,7 +59,7 @@ public class PagamentoDeBoletosPendentesService {
             boleto.setPagamento(statusPagamento);
             preparaListenerEmail(boleto);
         } catch (FeignException e) {
-            logger.error("Serviço de pagamento de boletos indisponível, cancelando boleto de número " + boleto.getCodigoDeBarras());
+            logger.error("Serviço de pagamento de boletos indisponível, cancelando boleto de número {}",boleto.getCodigoDeBarras());
             boleto.setPagamento(StatusPagamento.FALHA);
 			preparaListenerEmail(boleto);
         }
@@ -71,11 +71,12 @@ public class PagamentoDeBoletosPendentesService {
     private void preparaListenerEmail(Boleto boleto) {
 
         if (boleto.getStatusPagamento().equals(StatusPagamento.PAGO)) {
+            logger.info("Boleto {} Pago",boleto.getCodigoDeBarras());
             email.pagamentoSucesso(boleto);
         } else {
+            logger.info("Falha ao pagar Boleto {}", boleto.getCodigoDeBarras());
             email.pagamentoSemSucesso(boleto);
         }
-
     }
 
 }

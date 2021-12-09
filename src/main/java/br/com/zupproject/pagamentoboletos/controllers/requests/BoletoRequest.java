@@ -2,6 +2,7 @@ package br.com.zupproject.pagamentoboletos.controllers.requests;
 
 import java.math.BigDecimal;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -19,8 +20,18 @@ public class BoletoRequest {
 	@Pagamento(domainClass = Boleto.class, fieldName = "codigoDeBarras")
 	private String codigoDeBarras;
 
-	@NotNull
+	@NotNull @Valid
 	private ContaRequest contaRequest;
+
+	@Deprecated
+	public BoletoRequest() {
+	}
+
+	public BoletoRequest(BigDecimal valor, String codigoDeBarras, ContaRequest contaRequest) {
+		this.valor = valor;
+		this.codigoDeBarras = codigoDeBarras;
+		this.contaRequest = contaRequest;
+	}
 
 	public BigDecimal getValor() {
 		return valor;

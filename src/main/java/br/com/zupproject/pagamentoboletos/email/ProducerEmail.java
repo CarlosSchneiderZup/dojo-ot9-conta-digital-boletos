@@ -19,9 +19,9 @@ public class ProducerEmail {
         String topic = "transacoes";
 
         @Autowired
-        private KafkaTemplate<String, DadosEmail> kafkaTemplate;
+        private KafkaTemplate<String, DadosProdutorKafka> kafkaTemplate;
 
-        public void enviarMensagem(DadosEmail t) {
+        public void enviarMensagem(DadosProdutorKafka t) {
             logger.info("Enviando Mensagem para o Kafka ");
             this.kafkaTemplate.send(topic, t);
         }
